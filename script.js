@@ -7,39 +7,54 @@ const equal = document.querySelector('.equal');
 const negative = document.querySelector('.negative');
 let resultValue = "";
 let sign;
-let keycode
 let numberValue  = "";
 let sw = false;
+let sw2 = false;
 
 for(let i = 0 ; i < signs.length ; i++){
     signs[i].disabled = false;
 }
 
-// document.addEventListener('keypress', (e) => {
-//     keycode = e.key;
-//     if(keycode >= 0 && keycode <= 9) getNumber(keycode);
+document.addEventListener('keypress', (e) => {
+    let key = e.key;
+    if(key >= 0 && key <= 9) getNumber(key);
     
-//     switch (keycode){
-//         case "+":
-//             resultValue += numberValue + keycode;
-//             numberValue = "";
-//             result.textContent = "";
-//         case "-":
-//             resultValue += numberValue + keycode;
-//             numberValue = "";
-//         case "*":
-//             resultValue += numberValue + keycode;
-//             numberValue = "";
-//         case "/":
-//             resultValue += numberValue + keycode;
-//             numberValue = "";
-//         case "Enter":
-//             total();
-//     }
-    
-// }, false);
+    switch (key){
+        case "+":
+            sign = key;
+            sw = true;
+            break;
+        case "-":
+            sign = key;
+            sw = true;
+            break;
+        case "*":
+            sign = key;
+            sw = true;
+            break;
+        case "/":
+            sign = key;
+            sw = true;
+            break;
+        case ".":
+            if(numberValue === ""){
+                getNumber("0")
+            };
+            if(sw2 === false){
+                getNumber(comma.getAttribute('value'));
+                sw2 = true;
+            };
+            break;
+        case "Enter":
+            total();
+            break;
+            
+    };   
 
-// Add event listener on keypress
+    if(key === "Backspace" || key === "Delete") clearAll();
+});
+
+// // Add event listener on keypress
 // document.addEventListener('keypress', (event) => {
 //     var name = event.key;
 //     var code = event.code;
@@ -47,11 +62,16 @@ for(let i = 0 ; i < signs.length ; i++){
 //     alert(`Key pressed ${name} \r\n Key code value: ${code}`);
 // }, false);
 
-clear.addEventListener('click', () => {
+function clearAll() {
     result.textContent = "";
     comma.disabled = false;
+    sw2 = false;
     numberValue = "";
     resultValue = "";
+}
+
+clear.addEventListener('click', () => {
+    clearAll();
 });
 
 negative.addEventListener('click', () => {
@@ -61,7 +81,7 @@ negative.addEventListener('click', () => {
     } else if(numberValue.charAt(0) === "-"){
         numberValue = numberValue.slice(1)
         result.textContent = numberValue;
-    }
+    };
 });
 
 for(let i = 0 ; i < number.length ; i++) {
@@ -103,8 +123,8 @@ getSign();
  
 comma.addEventListener('click', () => {
     if(numberValue === ""){
-        getNumber("0")
-    }
+        getNumber("0");
+    };
     getNumber(comma.getAttribute('value'));
     comma.disabled = true;
 });
@@ -113,33 +133,33 @@ function addSign() {
     if(sw === true){
         for(let i = 0; i < signs.length ; i++){
             signs[i].disabled = false;
-        }
+        };
         resultValue += numberValue + sign;
         result.textContent = "";
         numberValue = "";
         comma.disabled = false;
         sw = false;
+        sw2 = false;
     };
 };
 
 function getNumber(atr) {
     addSign();
-    result.textContent = "";
     if(numberValue.length < 9){
         numberValue += atr;        
     };  
     result.textContent = numberValue;
-    console.log(numberValue)
 };
 
 function total() {
     resultValue += numberValue;
     resultValue = resultValue.replace(/x/g, "*").replace(/,/g, ".").replace(/--/g, "+");
     result.textContent = eval(resultValue);
+    numberValue = eval(resultValue);
     resultValue = "";
-    numberValue = "";
     comma.disabled = false;
-    console.log(resultValue)
+    sw2 = false;
+    
 };
 
 equal.addEventListener('click', () => {
